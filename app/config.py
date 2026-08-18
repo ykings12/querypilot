@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     )
     kek_secret: str = Field(default="", alias="KEK_SECRET")
 
-    router_model: str = Field(default="llama-3.1-8b-instant", alias="ROUTER_MODEL")
-    sql_model: str = Field(default="llama-3.3-70b-versatile", alias="SQL_MODEL")
+    router_model: str = Field(default="openai/gpt-oss-20b", alias="ROUTER_MODEL")
+    sql_model: str = Field(default="openai/gpt-oss-120b", alias="SQL_MODEL")
 
     default_row_limit: int = Field(default=1000, alias="DEFAULT_ROW_LIMIT")
     query_timeout_seconds: int = Field(default=5, alias="QUERY_TIMEOUT_SECONDS")
