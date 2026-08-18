@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+import streamlit as st
+
 _UI_DIR = Path(__file__).resolve().parent.parent
 if str(_UI_DIR) not in sys.path:
     sys.path.insert(0, str(_UI_DIR))
