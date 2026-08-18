@@ -11,6 +11,7 @@ if str(_UI_DIR) not in sys.path:
 
 from components.chat import get_json, post_json
 from components.explain_why import render_explain_why
+from components.how_to_use import render_quick_tips
 
 
 def _render_trace_block(*, request_id: str | None, trace_url: str | None) -> None:
@@ -22,9 +23,11 @@ def _render_trace_block(*, request_id: str | None, trace_url: str | None) -> Non
 
 st.set_page_config(page_title="QueryPilot Chat", page_icon="💬", layout="wide")
 st.title("QueryPilot Chat")
-st.caption("Ask questions about your connected PostgreSQL database.")
+st.caption("Ask analytical questions — see **How to use** in the sidebar for examples.")
 
 with st.sidebar:
+    render_quick_tips()
+    st.divider()
     st.header("Connection")
     if st.button("Refresh connections"):
         st.session_state.pop("connections", None)
@@ -39,8 +42,11 @@ with st.sidebar:
     if not connections:
         st.warning("No connections yet. Register one below.")
         with st.form("register_connection"):
-            name = st.text_input("Name", value="chinook-local")
-            host = st.text_input("Host", value="target-db")
+            name = st.text_input("Name", value="chinook")
+            host = st.text_input(
+                "Host",
+                placeholder="ep-xxxx.region.aws.neon.tech or target-db (Docker)",
+            )
             port = st.number_input("Port", value=5432)
             database = st.text_input("Database", value="chinook")
             username = st.text_input("Username", value="querypilot_readonly")
