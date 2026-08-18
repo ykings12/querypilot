@@ -108,7 +108,7 @@ Open the Streamlit **Trace** page or `GET /trace/{request_id}` for span waterfal
 | API | FastAPI + Uvicorn |
 | UI | Streamlit |
 | Agent pipeline | Custom async pipeline (`app/agents/graph.py`) |
-| LLM | Groq — router: `llama-3.1-8b-instant`, SQL: `llama-3.3-70b-versatile` |
+| LLM | Groq — router: `openai/gpt-oss-20b`, SQL: `openai/gpt-oss-120b` |
 | Metadata DB | PostgreSQL 16 (connections, traces, conversations, eval results) |
 | Target DB | PostgreSQL 16 — Chinook (read-only role) |
 | SQL safety | sqlglot AST validation + catalog allowlists |
