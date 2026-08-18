@@ -1,0 +1,4 @@
+# Streamlit Cloud — UI only (talks to Render API; no local app/ package needed)
+streamlit>=1.40.0
+httpx>=0.28.0
+pandas>=2.0.0
