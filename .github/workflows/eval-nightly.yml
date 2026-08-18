@@ -1,0 +1,66 @@
+name: Eval nightly
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  eval-benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Start stack
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          KEK_SECRET: ${{ secrets.KEK_SECRET }}
+        run: |
+          docker compose up -d --build
+          ./scripts/seed_chinook.sh
+          docker compose exec -T metadata-db psql -U querypilot -d querypilot_meta < scripts/init_metadata_db.sql
+
+      - name: Golden eval (gate)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          KEK_SECRET: ${{ secrets.KEK_SECRET }}
+          API_BASE_URL: http://localhost:8000
+          EVAL_DB_HOST: localhost
+          EVAL_DB_PORT: 5433
+          EVAL_QUERY_DELAY_SEC: "2"
+        run: |
+          if [ -z "$GROQ_API_KEY" ] || [ -z "$KEK_SECRET" ]; then
+            echo "Skipping eval — add GROQ_API_KEY and KEK_SECRET repository secrets."
+            exit 0
+          fi
+          make eval-dev
+
+      - name: Full benchmark
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          KEK_SECRET: ${{ secrets.KEK_SECRET }}
+          API_BASE_URL: http://localhost:8000
+          EVAL_DB_HOST: localhost
+          EVAL_DB_PORT: 5433
+          EVAL_QUERY_DELAY_SEC: "5"
+          EVAL_HTTP_TIMEOUT: "420"
+          EVAL_HTTP_RETRIES: "2"
+        run: |
+          if [ -z "$GROQ_API_KEY" ] || [ -z "$KEK_SECRET" ]; then
+            echo "Skipping benchmark — secrets not configured."
+            exit 0
+          fi
+          make eval-benchmark
+
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: eval/reports/*.json

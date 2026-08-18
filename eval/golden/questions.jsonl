@@ -1,0 +1,20 @@
+{"id": "cq001", "dataset": "chinook", "category": "filter", "question": "How many customers are from Brazil?", "reference_sql": "SELECT COUNT(*) FROM customer WHERE country = 'Brazil'"}
+{"id": "cq002", "dataset": "chinook", "category": "aggregation", "question": "How many customers are there in total?", "reference_sql": "SELECT COUNT(*) FROM customer"}
+{"id": "cq003", "dataset": "chinook", "category": "filter", "question": "How many customers are from the USA?", "reference_sql": "SELECT COUNT(*) FROM customer WHERE country = 'USA'"}
+{"id": "cq004", "dataset": "chinook", "category": "aggregation", "question": "How many music genres are in the database?", "reference_sql": "SELECT COUNT(*) FROM genre"}
+{"id": "cq005", "dataset": "chinook", "category": "aggregation", "question": "How many employees are there?", "reference_sql": "SELECT COUNT(*) FROM employee"}
+{"id": "cq006", "dataset": "chinook", "category": "aggregation", "question": "How many invoices exist?", "reference_sql": "SELECT COUNT(*) FROM invoice"}
+{"id": "cq007", "dataset": "chinook", "category": "aggregation", "question": "How many tracks are in the database?", "reference_sql": "SELECT COUNT(*) FROM track"}
+{"id": "cq008", "dataset": "chinook", "category": "aggregation", "question": "How many albums are there?", "reference_sql": "SELECT COUNT(*) FROM album"}
+{"id": "cq009", "dataset": "chinook", "category": "aggregation", "question": "How many artists are in the database?", "reference_sql": "SELECT COUNT(*) FROM artist"}
+{"id": "cq010", "dataset": "chinook", "category": "filter", "question": "How many tracks are longer than 5 minutes?", "reference_sql": "SELECT COUNT(*) FROM track WHERE milliseconds > 300000"}
+{"id": "cq011", "dataset": "chinook", "category": "aggregation", "question": "How many playlists are there?", "reference_sql": "SELECT COUNT(*) FROM playlist"}
+{"id": "cq012", "dataset": "chinook", "category": "aggregation", "question": "How many media types exist?", "reference_sql": "SELECT COUNT(*) FROM media_type"}
+{"id": "cq013", "dataset": "chinook", "category": "aggregation", "question": "How many invoice line items are there?", "reference_sql": "SELECT COUNT(*) FROM invoice_line"}
+{"id": "cq014", "dataset": "chinook", "category": "filter", "question": "How many customers are from Canada?", "reference_sql": "SELECT COUNT(*) FROM customer WHERE country = 'Canada'"}
+{"id": "cq015", "dataset": "chinook", "category": "filter", "question": "How many customers are from Germany?", "reference_sql": "SELECT COUNT(*) FROM customer WHERE country = 'Germany'"}
+{"id": "cq016", "dataset": "chinook", "category": "filter", "question": "How many tracks have a unit price greater than 1?", "reference_sql": "SELECT COUNT(*) FROM track WHERE unit_price > 1"}
+{"id": "cq017", "dataset": "chinook", "category": "filter", "question": "How many albums does artist id 1 have?", "reference_sql": "SELECT COUNT(*) FROM album WHERE artist_id = 1"}
+{"id": "cq018", "dataset": "chinook", "category": "filter", "question": "How many invoices were issued in 2021?", "reference_sql": "SELECT COUNT(*) FROM invoice WHERE invoice_date >= DATE '2021-01-01' AND invoice_date < DATE '2022-01-01'"}
+{"id": "cq019", "dataset": "chinook", "category": "filter", "question": "How many customers live in Calgary?", "reference_sql": "SELECT COUNT(*) FROM customer WHERE city = 'Calgary'"}
+{"id": "cq020", "dataset": "chinook", "category": "filter", "question": "How many tracks are shorter than one minute?", "reference_sql": "SELECT COUNT(*) FROM track WHERE milliseconds < 60000"}

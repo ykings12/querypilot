@@ -1,0 +1,2 @@
+# Not used at runtime — user prompts are built by app/security/prompt_boundary.py (assemble_prompt).
+# Keep sql_system.txt and assemble_prompt in sync when changing prompt structure.

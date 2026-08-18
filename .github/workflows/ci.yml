@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Lint
+        run: |
+          ruff check app tests
+          ruff format --check app tests
+
+      - name: Unit and safety tests
+        env:
+          KEK_SECRET: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+        run: pytest tests/unit tests/safety -q
+
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      metadata-db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: querypilot
+          POSTGRES_PASSWORD: querypilot
+          POSTGRES_DB: querypilot_meta
+        ports:
+          - 5435:5432
+        options: >-
+          --health-cmd "pg_isready -U querypilot -d querypilot_meta"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Initialize metadata schema
+        env:
+          PGPASSWORD: querypilot
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client > /dev/null
+          psql -h localhost -p 5435 -U querypilot -d querypilot_meta -f scripts/init_metadata_db.sql
+
+      - name: Integration tests
+        env:
+          KEK_SECRET: dGVzdC1rZWTsAAAAAAAAAAAAAAAAAAAAAA==
+          METADATA_DATABASE_URL: postgresql+asyncpg://querypilot:querypilot@localhost:5435/querypilot_meta
+        run: pytest tests/contract -q

@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Allow `from ui...` imports if needed; pages use components/ relative imports.
+ENV PYTHONPATH=/app
+
+COPY pyproject.toml README.md ./
+COPY app ./app
+COPY ui ./ui
+
+RUN pip install --no-cache-dir . streamlit
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "ui/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
