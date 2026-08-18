@@ -18,9 +18,21 @@ def build_dsn(connection: Connection, password: str) -> str:
     )
 
 
+def _ssl_mode_for_host(host: str) -> str | None:
+    """Neon and other cloud Postgres require TLS; local Docker services do not."""
+    normalized = host.strip().lower()
+    if normalized in {"localhost", "127.0.0.1", "target-db", "metadata-db"}:
+        return None
+    return "require"
+
+
 @asynccontextmanager
 async def target_connection(connection: Connection, password: str):
-    conn = await asyncpg.connect(build_dsn(connection, password))
+    connect_kwargs: dict[str, Any] = {}
+    ssl_mode = _ssl_mode_for_host(connection.host)
+    if ssl_mode is not None:
+        connect_kwargs["ssl"] = ssl_mode
+    conn = await asyncpg.connect(build_dsn(connection, password), **connect_kwargs)
     try:
         yield conn
     finally:
