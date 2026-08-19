@@ -28,6 +28,9 @@ def render_quick_tips(*, expanded: bool = False) -> None:
 - `SHOW TABLES` / system catalog questions (blocked by the safety validator)
 
 **Cloud demo (Neon):** use the **full** hostname (e.g. `….neon.tech`), not `target-db`.
+
+**Your own DB?** Host Postgres anywhere → read-only user → register in **Chat**.
+See **How to use** → *Bring your own database*.
             """
         )
 
@@ -99,6 +102,45 @@ If you are using the public Chinook sample database:
 
 For **local Docker**, use host `target-db` and port `5432` inside the compose network,
 or `localhost` / `5433` from your machine.
+
+---
+
+### Bring your own database
+
+QueryPilot does **not** copy your data into its metadata database. Metadata only stores
+**how to connect** (encrypted). Your tables stay wherever you host Postgres.
+
+**Steps for any PostgreSQL database**
+
+1. **Host your database** — Neon, Supabase, RDS, or local Postgres (must be reachable from
+   the QueryPilot API on Render for this public demo).
+2. **Create a read-only role** with `SELECT` on the schemas you want to query.
+3. In **Chat** → register a connection:
+
+| Field | What to enter |
+|-------|----------------|
+| Name | Any label (e.g. `my-sales-db`) |
+| Host | Full hostname only (e.g. `ep-xxxx.region.aws.neon.tech`) |
+| Port | Usually `5432` |
+| Database | Your database name |
+| Username | Read-only user |
+| Password | That user's password |
+
+4. Click **Register connection** — introspection loads your schema automatically.
+5. Pick the connection in the dropdown and ask questions.
+
+**Using Neon for your own DB**
+
+- Create a **new database** in your Neon project (separate from `neondb`, which is QueryPilot metadata).
+- Load schema/data with SQL or migrations.
+- Run grants for a read-only user (same pattern as Chinook's `querypilot_readonly`).
+- Register that host + database name in the UI — you do **not** import tables into `neondb`.
+
+**Public demo note**
+
+This hosted app has **no user login**. Connections you register are shared for this deploy.
+For a private setup with your company's database, run your own QueryPilot instance
+(Render + your metadata DB + Streamlit) and register connections there.
 
 ---
 
