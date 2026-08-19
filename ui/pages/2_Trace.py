@@ -36,8 +36,9 @@ with st.sidebar:
         - **query.root** — total wall time
         - **sql.generate** — LLM call (+ tokens)
         - **sql.validate** — AST safety check
-        - **sql.execute** — run on Chinook
+        - **sql.execute** — run on target database
 
-        Phase 2 gate also uses traces for **eval** and **debugging** failed queries.
+        Copy the **Request ID** from Chat after each question, paste it here,
+        and expand **sql.generate** to see prompt/completion token counts.
         """
     )
