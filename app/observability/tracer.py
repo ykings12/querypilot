@@ -29,25 +29,24 @@ class Tracer:
         span_id = uuid.uuid4()
         start = time.perf_counter()
         start_ts = datetime.now(tz=UTC)
-        status = "ok"
+        record = SpanRecord(
+            span_id=span_id,
+            parent_span_id=parent_span_id,
+            agent=agent,
+            status="ok",
+            start_ts=start_ts,
+            duration_ms=0,
+            retry_count=retry_count,
+        )
+        # Register before yield so attach_llm_usage / set_cache_hit work inside the block.
+        self.spans.append(record)
         try:
             yield span_id
         except Exception:
-            status = "error"
+            record.status = "error"
             raise
         finally:
-            duration_ms = max(1, int((time.perf_counter() - start) * 1000))
-            self.spans.append(
-                SpanRecord(
-                    span_id=span_id,
-                    parent_span_id=parent_span_id,
-                    agent=agent,
-                    status=status,
-                    start_ts=start_ts,
-                    duration_ms=duration_ms,
-                    retry_count=retry_count,
-                )
-            )
+            record.duration_ms = max(1, int((time.perf_counter() - start) * 1000))
 
     def attach_llm_usage(
         self,
